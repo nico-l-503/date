@@ -1,0 +1,695 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Will You Go Out With Me? - Crushipedia</title>
+<style>
+  /* ============================================================
+     EDIT ME: set the name this is actually for.
+     Search this file for the NAME constant near the bottom <script>.
+     ============================================================ */
+
+  :root{
+    --paper: #ffffff;
+    --grey-bg: #f8f9fa;
+    --border: #a2a9b1;
+    --text: #202122;
+    --link: #3366cc;
+    --link-visited: #795cb2;
+    --citation-red: #cc2200;
+    --heart: #d6336c;
+    --serif: Georgia, "Times New Roman", Times, serif;
+    --sans: Verdana, Arial, Helvetica, sans-serif;
+    --mono: "Courier New", Courier, monospace;
+  }
+
+  *{ box-sizing: border-box; }
+
+  html, body{ margin:0; padding:0; background:#e9edf1; }
+
+  body{
+    font-family: var(--sans);
+    font-size: 14px;
+    color: var(--text);
+    line-height: 1.6;
+  }
+
+  a{ color: var(--link); text-decoration: none; }
+  a:hover{ text-decoration: underline; }
+  a:visited{ color: var(--link-visited); }
+
+  /* ---------- top wordmark bar ---------- */
+  .topbar{
+    background: var(--paper);
+    border-bottom: 1px solid var(--border);
+    padding: 10px 18px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    flex-wrap: wrap;
+  }
+  .wordmark{
+    font-family: var(--serif);
+    font-size: 26px;
+    font-weight: bold;
+    letter-spacing: -0.5px;
+  }
+  .wordmark .the{ font-weight: normal; font-size: 13px; display:block; font-family: var(--sans); color:#555; letter-spacing: 0; }
+  .searchbox{
+    display:flex; gap:0;
+  }
+  .searchbox input{
+    border: 1px solid var(--border);
+    padding: 6px 8px;
+    font-family: var(--sans);
+    font-size: 13px;
+    width: 200px;
+  }
+  .searchbox button{
+    border: 1px solid var(--border);
+    border-left: none;
+    background: var(--grey-bg);
+    padding: 6px 12px;
+    font-size: 13px;
+    cursor: pointer;
+  }
+  .loginlink{ font-size: 12px; }
+
+  /* ---------- layout shell ---------- */
+  .shell{
+    max-width: 1000px;
+    margin: 14px auto;
+    display: grid;
+    grid-template-columns: 160px 1fr;
+    gap: 0;
+    background: var(--paper);
+    border: 1px solid var(--border);
+  }
+
+  .sidebar{
+    background: var(--grey-bg);
+    border-right: 1px solid var(--border);
+    padding: 14px 10px;
+    font-size: 12.5px;
+  }
+  .sidebar h3{
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: #54595d;
+    margin: 14px 0 6px;
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 3px;
+  }
+  .sidebar h3:first-child{ margin-top: 0; }
+  .sidebar ul{ list-style:none; margin:0; padding:0; }
+  .sidebar li{ margin-bottom: 5px; }
+
+  .main{
+    padding: 0;
+    min-width: 0;
+  }
+
+  /* ---------- tabs ---------- */
+  .tabs{
+    display:flex;
+    border-bottom: 1px solid var(--border);
+    background: var(--grey-bg);
+    padding: 0 18px;
+    gap: 2px;
+    flex-wrap: wrap;
+  }
+  .tab{
+    padding: 9px 14px;
+    font-size: 13px;
+    cursor: pointer;
+    border: 1px solid transparent;
+    border-bottom: none;
+    color: var(--link);
+    background: transparent;
+    margin-bottom: -1px;
+    font-family: var(--sans);
+  }
+  .tab.active{
+    background: var(--paper);
+    border-color: var(--border);
+    color: var(--text);
+    font-weight: bold;
+  }
+  .tab:hover:not(.active){ text-decoration: underline; }
+
+  .content{ padding: 18px 22px 32px; }
+
+  /* ---------- article view ---------- */
+  h1.title{
+    font-family: var(--serif);
+    font-size: 32px;
+    font-weight: normal;
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 6px;
+    margin: 0 0 4px;
+  }
+  .byline{
+    font-size: 12px;
+    color: #54595d;
+    font-style: italic;
+    margin-bottom: 14px;
+  }
+  .disambig{
+    font-size: 12.5px;
+    font-style: italic;
+    color: #444;
+    background: var(--grey-bg);
+    border-left: 3px solid var(--border);
+    padding: 6px 10px;
+    margin-bottom: 16px;
+  }
+
+  .article-body{ display:flex; gap: 22px; flex-wrap: wrap; }
+  .prose{ flex: 1 1 340px; min-width: 0; }
+  .prose p{ margin: 0 0 14px; }
+  .cite{
+    color: var(--link);
+    font-size: 11px;
+    vertical-align: super;
+    cursor: pointer;
+  }
+  .citation-needed{
+    color: var(--citation-red);
+    font-size: 11px;
+    vertical-align: super;
+    font-weight: bold;
+    cursor: help;
+    white-space: nowrap;
+  }
+
+  /* ---------- infobox ---------- */
+  .infobox{
+    width: 260px;
+    flex: 0 0 260px;
+    border: 1px solid var(--border);
+    background: var(--grey-bg);
+    font-size: 12.5px;
+  }
+  .infobox .ib-title{
+    background: #eaecf0;
+    text-align: center;
+    font-family: var(--serif);
+    font-size: 16px;
+    padding: 6px 4px;
+    border-bottom: 1px solid var(--border);
+  }
+  .ib-image{
+    background: repeating-conic-gradient(#dcdfe3 0% 25%, #eef0f2 0% 50%) 0 0 / 14px 14px;
+    border-bottom: 1px solid var(--border);
+    padding: 10px;
+    text-align: center;
+  }
+  .ib-broken{
+    border: 1px dashed #8a8f98;
+    background: var(--paper);
+    padding: 10px 6px;
+    display: inline-block;
+  }
+  .ib-broken .icon{
+    font-family: var(--sans);
+    font-size: 10px;
+    color: #666;
+    margin-bottom: 6px;
+    letter-spacing: 0.5px;
+  }
+  pre.ascii-heart{
+    font-family: var(--mono);
+    font-size: 9px;
+    line-height: 1.0;
+    margin: 0;
+    color: var(--heart);
+    text-align: left;
+    display: inline-block;
+  }
+  .ib-caption{
+    font-size: 10.5px;
+    color: #54595d;
+    padding: 5px 8px 8px;
+    font-style: italic;
+    border-bottom: 1px solid var(--border);
+  }
+  table.ib-table{ width: 100%; border-collapse: collapse; }
+  table.ib-table tr{ border-bottom: 1px solid #e0e2e6; }
+  table.ib-table tr:last-child{ border-bottom: none; }
+  table.ib-table th, table.ib-table td{
+    text-align: left;
+    padding: 5px 8px;
+    vertical-align: top;
+    font-weight: normal;
+  }
+  table.ib-table th{ width: 40%; color: #54595d; }
+
+  /* ---------- did you know ---------- */
+  .dyk{
+    margin: 20px 0;
+    border: 1px solid var(--border);
+    background: var(--grey-bg);
+  }
+  .dyk-head{
+    background: #eaecf0;
+    font-family: var(--serif);
+    font-weight: bold;
+    padding: 5px 10px;
+    border-bottom: 1px solid var(--border);
+    font-size: 13px;
+  }
+  .dyk-body{ padding: 10px 14px; font-size: 13px; }
+  .dyk-body .hook-mark{
+    font-family: var(--serif);
+    font-weight: bold;
+    color: var(--heart);
+  }
+
+  h2.section{
+    font-family: var(--serif);
+    font-weight: normal;
+    font-size: 22px;
+    border-bottom: 1px solid var(--border);
+    margin: 26px 0 10px;
+    padding-bottom: 3px;
+  }
+
+  .merge-banner{
+    border: 1px solid #c8ccd1;
+    background: #fef6e7;
+    padding: 12px 14px;
+    font-size: 13px;
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+  }
+  .merge-banner .icon{ font-size: 22px; line-height: 1; }
+  .merge-banner .txt{ flex: 1; }
+  .merge-banner .txt em{ color: #54595d; }
+
+  .decision-row{
+    position: relative;
+    margin-top: 14px;
+    display:flex;
+    gap: 12px;
+    align-items:center;
+    min-height: 60px;
+    flex-wrap: wrap;
+  }
+  button.wiki-btn{
+    font-family: var(--sans);
+    font-size: 13px;
+    padding: 8px 16px;
+    cursor: pointer;
+    border-radius: 2px;
+  }
+  #yesBtn{
+    background: #36c;
+    color: #fff;
+    border: 1px solid #2a4b8d;
+  }
+  #yesBtn:hover{ background: #2a4b8d; }
+  #noBtn{
+    background: var(--grey-bg);
+    border: 1px solid var(--border);
+    color: var(--text);
+    position: relative;
+    z-index: 2;
+  }
+  #noBtn.fleeing{ position: fixed; }
+  #dodgeCounter{
+    font-size: 11.5px;
+    color: #54595d;
+    margin-top: 8px;
+    min-height: 14px;
+  }
+
+  #resultBox{
+    display:none;
+    margin-top: 18px;
+    border: 1px solid #6ea86e;
+    background: #eef8ee;
+    padding: 14px 16px;
+    font-size: 13.5px;
+  }
+  #resultBox b{ color: #1a6b1a; }
+
+  ol.refs{
+    font-size: 11.5px;
+    color: #333;
+    padding-left: 22px;
+  }
+  ol.refs li{ margin-bottom: 6px; }
+
+  /* ---------- edit view (wikitext) ---------- */
+  #editView, #historyView{ display:none; }
+  textarea.wikisource{
+    width: 100%;
+    min-height: 420px;
+    font-family: var(--mono);
+    font-size: 12.5px;
+    line-height: 1.5;
+    border: 1px solid var(--border);
+    padding: 12px;
+    resize: vertical;
+    background: #fbfbfb;
+  }
+  .edit-toolbar{
+    background: var(--grey-bg);
+    border: 1px solid var(--border);
+    border-bottom: none;
+    padding: 6px 8px;
+    font-size: 11px;
+    color: #54595d;
+  }
+  .edit-note{ font-size: 12px; color: #54595d; margin-top: 8px; }
+
+  /* ---------- history view ---------- */
+  .rev-log{
+    font-family: var(--mono);
+    font-size: 12.5px;
+    background: #fbfbfb;
+    border: 1px solid var(--border);
+    padding: 14px;
+    white-space: pre-wrap;
+    line-height: 1.8;
+    min-height: 160px;
+  }
+  .rev-log .ts{ color: #777; }
+  .rev-log .revert{ color: var(--citation-red); }
+  .rev-log .keep{ color: #1a6b1a; }
+
+  footer.pagefoot{
+    text-align:center;
+    font-size: 11px;
+    color: #72777d;
+    padding: 16px 10px 30px;
+  }
+
+  @media (max-width: 680px){
+    .shell{ grid-template-columns: 1fr; }
+    .sidebar{ border-right:none; border-bottom: 1px solid var(--border); }
+    .article-body{ flex-direction: column; }
+    .infobox{ width: 100%; flex-basis: auto; }
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    * { scroll-behavior: auto !important; }
+  }
+
+  :focus-visible{ outline: 2px solid #36c; outline-offset: 1px; }
+</style>
+</head>
+<body>
+
+  <div class="topbar">
+    <div class="wordmark">CRUSHIPEDIA
+      <span class="the">the encyclopedia anyone can act on</span>
+    </div>
+    <div class="searchbox">
+      <input type="text" placeholder="Search Crushipedia" aria-label="Search (decorative)" disabled>
+      <button type="button" disabled>Search</button>
+    </div>
+    <div class="loginlink"><a href="#" onclick="return false;">Log in</a> / <a href="#" onclick="return false;">Create account</a></div>
+  </div>
+
+  <div class="shell">
+    <div class="sidebar">
+      <h3>Navigation</h3>
+      <ul>
+        <li><a href="#" onclick="return false;">Main Page</a></li>
+        <li><a href="#" id="randomArticleLink">Random article</a></li>
+        <li><a href="#" onclick="return false;">Recent changes</a></li>
+        <li><a href="#" onclick="return false;">Contact us</a></li>
+      </ul>
+      <h3>Tools</h3>
+      <ul>
+        <li><a href="#" onclick="return false;">What links here</a></li>
+        <li><a href="#" onclick="return false;">Related changes</a></li>
+        <li><a href="#" onclick="return false;">Permanent link</a></li>
+        <li><a href="#" onclick="return false;">Cite this page</a></li>
+      </ul>
+      <h3>Languages</h3>
+      <ul>
+        <li><a href="#" onclick="return false;">Denial</a></li>
+        <li><a href="#" onclick="return false;">Butterflies</a></li>
+        <li><a href="#" onclick="return false;">Overthinking it</a></li>
+      </ul>
+    </div>
+
+    <div class="main">
+      <div class="tabs">
+        <div class="tab active" data-view="article">Article</div>
+        <div class="tab" data-view="talk">Talk</div>
+        <div class="tab" data-view="edit">Edit</div>
+        <div class="tab" data-view="history">View history</div>
+      </div>
+
+      <div class="content">
+
+        <!-- ===================== ARTICLE VIEW ===================== -->
+        <div id="articleView">
+          <h1 class="title">Will You Go Out With Me?</h1>
+          <div class="byline">From Crushipedia, the free encyclopedia. (Redirected from <em>Please Say Yes</em>)</div>
+          <div class="disambig">This article is about a proposed evening plan. For the physiological sensation, see <a href="#" onclick="return false;">Butterflies (idiom)</a>. For the 2004 board game, see <a href="#" onclick="return false;">Speed Dating (game)</a>.</div>
+
+          <div class="article-body">
+            <div class="prose">
+              <p><b>Will You Go Out With Me?</b> is a proposal, first drafted moments ago, under consideration by exactly one recipient<span class="cite" title="Source: the person who made this page">[1]</span>. It is widely regarded as a low-risk, high-upside venture<span class="citation-needed" title="Disputed. No peer review has occurred.">[citation needed]</span>, typically involving food, conversation, and an above-average amount of nervous laughter<span class="cite" title="Source: basically every date ever">[2]</span>.</p>
+
+              <p>Unlike most encyclopedia entries, this one has a deadline. Scholars<span class="citation-needed" title="There are no scholars. There is one (1) person, and they are hovering over the send button.">[citation needed]</span> note that the proposal was drafted using a genuinely quirky, early-internet aesthetic, on the theory that sincerity lands better when it's dressed up as a bit.</p>
+
+              <p>The subject of the proposal is referred to throughout this article as <b><span id="nameSlot">NAME</span></b>, per standard Crushipedia naming conventions.</p>
+            </div>
+
+            <aside class="infobox">
+              <div class="ib-title">Will You Go Out With Me?</div>
+              <div class="ib-image">
+                <div class="ib-broken">
+                  <div class="icon">IMAGE FAILED TO LOAD — DISPLAYING ALT TEXT</div>
+                  <pre class="ascii-heart" id="ibHeart"></pre>
+                </div>
+              </div>
+              <div class="ib-caption">Fig. 1 — Rendering of the general vibe. Image host discontinued in 2009.</div>
+              <table class="ib-table">
+                <tr><th>Type</th><td>Proposal, pending</td></tr>
+                <tr><th>Status</th><td><span id="statusCell">Awaiting response</span></td></tr>
+                <tr><th>Success rate</th><td>Unknown<span class="citation-needed" title="Ask again after clicking a button">[citation needed]</span></td></tr>
+                <tr><th>Risk level</th><td>Mild social risk, zero physical risk</td></tr>
+                <tr><th>Recommended attire</th><td>Yours, ideally worn while smiling</td></tr>
+                <tr><th>Also known as</th><td>"The Big Ask", "It's Just Dinner"</td></tr>
+              </table>
+            </aside>
+          </div>
+
+          <div class="dyk">
+            <div class="dyk-head">Did you know...</div>
+            <div class="dyk-body"><span class="hook-mark">...</span> that this article was created for the sole purpose of asking <span id="nameSlot2">NAME</span> to dinner, and that everything else on this page — the fake citations, the broken image, the tabs up top — exists to make that ask a little less nerve-wracking to send?</div>
+          </div>
+
+          <h2 class="section">Proposed merge</h2>
+          <div class="merge-banner">
+            <div class="icon">⚠</div>
+            <div class="txt">It has been suggested that <b>this evening</b> be merged with <b>dinner, or a coffee, or whatever's easiest for you</b>. <em>This proposal has been open for discussion since you opened this page.</em></div>
+          </div>
+
+          <div class="decision-row" id="btnRow">
+            <button class="wiki-btn" id="yesBtn">Support merge (yes)</button>
+            <button class="wiki-btn" id="noBtn">Discuss on Talk page (no)</button>
+          </div>
+          <div id="dodgeCounter"></div>
+
+          <div id="resultBox">
+            <b>Merge complete.</b> This page has been marked as resolved. A human will now follow up to lock in an actual time and place, because Crushipedia does not currently support calendars.
+          </div>
+
+          <h2 class="section">References</h2>
+          <ol class="refs">
+            <li>Anonymous. <i>Reasons This Seemed Like a Good Idea at the Time.</i> Self-published, undated.</li>
+            <li>Various. <i>What Generally Happens on Dates, A Survey.</i> Common knowledge, unverifiable.</li>
+            <li>Crushipedia Style Guide. <i>On the Use of Broken Image Links for Comedic Effect.</i> Retrieved just now.</li>
+          </ol>
+        </div>
+
+        <!-- ===================== TALK VIEW ===================== -->
+        <div id="talkView" style="display:none;">
+          <h1 class="title">Talk: Will You Go Out With Me?</h1>
+          <p style="font-size:13px; color:#54595d; font-style:italic;">This is the talk page for discussing changes to the "Will You Go Out With Me?" article. This is not the place to discuss the subject itself. For that, see the buttons on the article page.</p>
+          <div style="border:1px solid var(--border); background: var(--grey-bg); padding:14px; font-size:13px; margin-top:14px;">
+            <p><b>Neutrality dispute</b> — Is this page neutral? <i>Not even a little.</i> It was written by an interested party with an obvious agenda. Nominated for a "conflict of interest" tag, which the author has chosen to ignore. <span style="color:#54595d;">— unsigned comment</span></p>
+            <p style="margin-top:10px;"><b>Notability</b> — Does this proposal meet the notability guidelines? <i>To at least one person, extremely.</i> <span style="color:#54595d;">— unsigned comment</span></p>
+          </div>
+        </div>
+
+        <!-- ===================== EDIT VIEW ===================== -->
+        <div id="editView">
+          <h1 class="title" style="font-size:22px;">Editing: Will You Go Out With Me?</h1>
+          <div class="edit-toolbar">B &nbsp; <i>I</i> &nbsp; [[link]] &nbsp; {{template}} &nbsp; &lt;ref&gt;</div>
+          <textarea class="wikisource" readonly id="wikisource"></textarea>
+          <p class="edit-note">You are viewing the raw wikitext source. Editing is disabled on this revision — some proposals are best left un-workshopped.</p>
+        </div>
+
+        <!-- ===================== HISTORY VIEW ===================== -->
+        <div id="historyView">
+          <h1 class="title" style="font-size:22px;">Revision history of "Will You Go Out With Me?"</h1>
+          <div class="rev-log" id="revLog"></div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <footer class="pagefoot">This page was last edited moments ago, out of nervousness. Text is unlicensed, unverified, and entirely sincere.</footer>
+
+<script>
+  // ============================================================
+  // EDIT ME: set the real name before sharing this link.
+  const NAME = "NAME";
+  // ============================================================
+  document.getElementById('nameSlot').textContent = NAME;
+  document.getElementById('nameSlot2').textContent = NAME;
+
+  // ASCII heart in the "broken image" infobox slot
+  document.getElementById('ibHeart').textContent =
+`   ,d88b.  .d88b,
+  88888888888888
+  \`Y8888888888Y'
+    \`Y888888Y'
+      \`Y88Y'
+        \`Y'`;
+
+  // ---------------- tab switching ----------------
+  const views = {
+    article: document.getElementById('articleView'),
+    talk: document.getElementById('talkView'),
+    edit: document.getElementById('editView'),
+    history: document.getElementById('historyView')
+  };
+  document.querySelectorAll('.tab').forEach(tab => {
+    tab.addEventListener('click', () => {
+      document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+      tab.classList.add('active');
+      Object.values(views).forEach(v => v.style.display = 'none');
+      views[tab.dataset.view].style.display = 'block';
+      if(tab.dataset.view === 'history') playHistory();
+    });
+  });
+
+  // "Random article" gag — always leads back here
+  document.getElementById('randomArticleLink').addEventListener('click', (e) => {
+    e.preventDefault();
+    document.querySelector('.tab[data-view="article"]').click();
+    window.scrollTo({top:0, behavior:'smooth'});
+  });
+
+  // ---------------- wikitext source ----------------
+  document.getElementById('wikisource').value =
+`{{Infobox proposal
+| name        = Will You Go Out With Me?
+| type        = Proposal, pending
+| status      = Awaiting response
+| success_rate = unknown <!-- [citation needed] -->
+| risk        = mild
+}}
+
+'''Will You Go Out With Me?''' is a proposal first drafted moments ago,
+under consideration by exactly one recipient.<ref>Anonymous, self-published.</ref>
+It is widely regarded as a low-risk, high-upside venture <!-- [citation needed] -->,
+typically involving food, conversation, and an above-average amount of
+nervous laughter.<ref>Various, common knowledge.</ref>
+
+The subject of the proposal is referred to throughout this article as
+'''${NAME}''', per standard Crushipedia naming conventions.
+
+== Proposed merge ==
+It has been suggested that '''this evening''' be merged with
+'''dinner, or coffee, or whatever's easiest'''.
+
+== References ==
+<references/>
+
+[[Category:Proposals]]
+[[Category:Pending]]
+[[Category:Nervous but hopeful]]`;
+
+  // ---------------- revision history ----------------
+  const revLines = [
+    ["00:01", "Page created by ", "Anonymous", " (\"initial draft, mostly just vibes\")"],
+    ["00:02", "Added heart emoji ", "(reverted by GrumpyEditor42, \"unencyclopedic tone\")", ""],
+    ["00:03", "Restored heart emoji ", "(cited WP:JUSTLETMEHAVEHEARTS)", ""],
+    ["00:04", "Rewrote intro for clarity and, frankly, courage", "", ""],
+    ["00:05", "Added infobox and broken image gag", "", ""],
+    ["00:06", "Page protected due to minor edit war over tone", "", ""],
+    ["00:07", "Current revision — sent to ", NAME, ""]
+  ];
+  let historyPlayed = false;
+  function playHistory(){
+    if(historyPlayed) return;
+    historyPlayed = true;
+    const log = document.getElementById('revLog');
+    log.textContent = '';
+    let i = 0;
+    function next(){
+      if(i >= revLines.length) return;
+      const [ts, a, b] = revLines[i];
+      const isRevert = a.includes('reverted');
+      const isCurrent = ts === "00:07";
+      const line = document.createElement('div');
+      const cls = isRevert ? 'revert' : (isCurrent ? 'keep' : '');
+      line.innerHTML = '<span class="ts">' + ts + '</span> — ' + a + (b ? '<i>' + b + '</i>' : '');
+      if(cls) line.classList.add(cls);
+      log.appendChild(line);
+      i++;
+      setTimeout(next, 420);
+    }
+    next();
+  }
+
+  // ---------------- dodge / decide ----------------
+  const noBtn = document.getElementById('noBtn');
+  const yesBtn = document.getElementById('yesBtn');
+  const counter = document.getElementById('dodgeCounter');
+  const btnRow = document.getElementById('btnRow');
+  const resultBox = document.getElementById('resultBox');
+  const statusCell = document.getElementById('statusCell');
+  let dodges = 0;
+
+  const notes = [
+    "edit conflict — try again",
+    "reverted",
+    "protected page, try elsewhere",
+    "this talk page does not exist yet",
+    "still does not exist",
+    "consensus not reached",
+    "RfC pending",
+    "discussion archived"
+  ];
+
+  function dodge(e){
+    dodges++;
+    noBtn.classList.add('fleeing');
+    const margin = 50;
+    const bw = noBtn.offsetWidth, bh = noBtn.offsetHeight;
+    const x = Math.random() * (window.innerWidth - bw - margin*2) + margin;
+    const y = Math.random() * (window.innerHeight - bh - margin*2) + margin;
+    noBtn.style.left = x + 'px';
+    noBtn.style.top = y + 'px';
+    counter.textContent = "edit attempts: " + dodges + " — " + notes[Math.min(dodges-1, notes.length-1)];
+  }
+  noBtn.addEventListener('mouseenter', dodge);
+  noBtn.addEventListener('click', (e) => { e.preventDefault(); dodge(e); });
+  noBtn.addEventListener('touchstart', (e) => { e.preventDefault(); dodge(e); }, {passive:false});
+
+  yesBtn.addEventListener('click', () => {
+    btnRow.style.display = 'none';
+    counter.style.display = 'none';
+    statusCell.textContent = 'Merge accepted';
+    resultBox.style.display = 'block';
+  });
+</script>
+
+</body>
+</html>
